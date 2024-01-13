@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { processPaymentWithPayPal } from "./CheckoutUtil";
+import { processPaymentWithPayPal, processPaymentWithStripe } from "./CheckoutUtil";
 
 const PreOrder = () => {
   const [salesOrder, setSalesOrder] = useState({
@@ -44,7 +44,7 @@ const PreOrder = () => {
 
   // TODO: add payment methods
   const stripeOnClick = async () => {
-    //     processPaymentWithStripe(salesOrder);
+        processPaymentWithStripe("tok_visa", salesOrder, salesOrder.salesOrderDetail);
   };
 
   const aliPayOnClick = async () => {
