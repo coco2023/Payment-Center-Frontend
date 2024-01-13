@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { processPaymentWithPayPal } from "./CheckoutUtil";
 
 const PreOrder = () => {
-  const [salseOrder, setSalseOrder] = useState({
-    salesOrderSn: `SO-${new Date().getTime()}-${Math.floor(Math.random() * 10000)}`,
+  const [salesOrder, setSalesOrder] = useState({
+    salesOrderSn: `SO-${new Date().getTime()}-${Math.floor(
+      Math.random() * 10000
+    )}`,
     customerId: 1,
     supplierId: 1,
     customerName: "John Doe",
@@ -23,46 +26,107 @@ const PreOrder = () => {
         quantity: 10,
         unitPrice: 0.11,
         discount: 0.01,
-        lineTotal: 1.00,
+        lineTotal: 1.0,
       },
     ],
   });
-  sessionStorage.setItem('salesOrderData', JSON.stringify(salseOrder));
+  sessionStorage.setItem("salesOrderData", JSON.stringify(salesOrder));
 
-  const processPaymentWithPayPal = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:9024/api/users/checkout/create-order`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(salseOrder), // Make sure salseOrder does not contain circular references
-        }
-      );
+  // input changes
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setSalesOrder({ ...salesOrder, [name]: value });
+  };
 
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(
-          responseData.message || "Failed to initiate PayPal payment"
-        );
-      }
-      console.log(response)
-      const responseData = await response.json();
-      console.log("Response from server:", responseData);
-      window.location.href = responseData.approvalUrl; // Assuming the response contains the redirect URL
+  const payPalOnClick = async () => {
+    processPaymentWithPayPal(salesOrder);
+  };
 
-    } catch (error) {
-      console.error("Error initiating PayPal payment:", error);
-      throw error;
-    }
+  // TODO: add payment methods
+  const stripeOnClick = async () => {
+    //     processPaymentWithStripe(salesOrder);
+  };
+
+  const aliPayOnClick = async () => {
+    //     processPaymentWithAlipay(salesOrder);
+  };
+
+  const klarnaOnClick = async () => {
+    //     processPaymentWithKlarnaPay(salesOrder);
+  };
+
+  const applePayOnClick = async () => {
+    //     processPaymentWithApplePay(salesOrder);
+  };
+
+  const googlePayOnClick = async () => {
+    //     processPaymentWithGooglePay(salesOrder);
+  };
+
+  const aterPayPayOnClick = async () => {
+    //     processPaymentWithAfterPay(salesOrder);
   };
 
   return (
     <div>
       <h1>Checkout Page</h1>
-      <button onClick={processPaymentWithPayPal}>Confirm Order - PayPal</button>
+
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          // processPaymentWithPayPal(salesOrder);
+        }}
+      >
+        <input
+          type="text"
+          name="customerName"
+          value={salesOrder.customerName}
+          onChange={handleInputChange}
+          placeholder="Customer Name"
+        />
+        <input
+          type="email"
+          name="customerEmail"
+          value={salesOrder.customerEmail}
+          onChange={handleInputChange}
+          placeholder="Customer Email"
+        />
+        <input
+          type="text"
+          name="shippingAddress"
+          value={salesOrder.shippingAddress}
+          onChange={handleInputChange}
+          placeholder="Shipping Address"
+        />
+        <input
+          type="text"
+          name="billingAddress"
+          value={salesOrder.billingAddress}
+          onChange={handleInputChange}
+          placeholder="Billing Address"
+        />
+        ($):
+        <input
+          type="number"
+          name="totalAmount"
+          value={salesOrder.totalAmount}
+          onChange={handleInputChange}
+          placeholder="Total Amount"
+        />
+      </form>
+
+      <button onClick={payPalOnClick}>Confirm Order - PayPal</button>
+      <button onClick={stripeOnClick}>Confirm Order - Stripe</button>
+      <button onClick={aliPayOnClick}>Confirm Order - Alipay</button>
+      <button onClick={klarnaOnClick}>Confirm Order - Klarna</button>
+      <button onClick={applePayOnClick}>Confirm Order - Apple Pay</button>
+      <button onClick={googlePayOnClick}>Confirm Order - Google Pay</button>
+      <button onClick={aterPayPayOnClick}>Confirm Order - AfterPay</button>
+      <br />
+      <button onClick={aliPayOnClick}>Confirm Order - Affirm</button>
+      <button onClick={aliPayOnClick}>Confirm Order - Wechat Pay</button>
+      <button onClick={aliPayOnClick}>支付 - 蚂蚁花呗</button>
+      <button onClick={aliPayOnClick}>支付 - 京东百条</button>
     </div>
   );
 };
