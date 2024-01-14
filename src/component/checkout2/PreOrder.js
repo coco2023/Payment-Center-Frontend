@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { processPaymentWithPayPal, processPaymentWithStripe } from "./CheckoutUtil";
+import { processPaymentWithPayPal, processPaymentWithStripe, processPaymentWithAlipay } from "./CheckoutUtil";
 
 const PreOrder = () => {
   const [salesOrder, setSalesOrder] = useState({
@@ -10,7 +10,7 @@ const PreOrder = () => {
     supplierId: 1,
     customerName: "John Doe",
     customerEmail: "john.doe@example.com",
-    totalAmount: 1.0,
+    totalAmount: 1.00,
     shippingAddress: "1234 Main St, Anytown, AT 12345",
     billingAddress: "1234 Main St, Anytown, AT 12345",
     orderStatus: "PENDING",
@@ -30,6 +30,15 @@ const PreOrder = () => {
       },
     ],
   });
+
+  const [ aliSalesOrder, setAliSalesOrder ] = useState({
+    amount: 1.00,
+    currency: "CNY",
+    orderNumber: `SO-${new Date().getTime()}-${Math.floor(
+      Math.random() * 10000
+    )}`
+  });
+  
   sessionStorage.setItem("salesOrderData", JSON.stringify(salesOrder));
 
   // input changes
@@ -48,7 +57,7 @@ const PreOrder = () => {
   };
 
   const aliPayOnClick = async () => {
-    //     processPaymentWithAlipay(salesOrder);
+        processPaymentWithAlipay(aliSalesOrder.amount, aliSalesOrder.currency, aliSalesOrder.orderNumber);
   };
 
   const klarnaOnClick = async () => {

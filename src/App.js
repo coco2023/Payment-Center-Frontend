@@ -16,7 +16,7 @@ function App() {
       <Route path="/paypal-success" element={<Success />} />
       <Route path="/paypal-cancel" element={<Cancel />} />
       <Route path="/processing" element={<Processing />} /> */}
-        <Route path="/order" element={<PreOrder />} />
+        <Route path="/" element={<PreOrder />} />
         <Route path="/paypal-success" element={<PayPalCompletePayment />} />
         <Route path="/payment-success" element={<SuccessPage />} />
         {/* <Route path="/paypal-return" element={<PayPalReturnPage />} /> */}
